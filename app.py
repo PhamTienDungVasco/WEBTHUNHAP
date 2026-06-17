@@ -1,4 +1,30 @@
 import streamlit as st
+import base64
+
+def chen_hinh_nen(ten_file):
+    with open(ten_file, "rb") as f:
+        du_lieu = f.read()
+    chuoi_ma_hoa = base64.b64encode(du_lieu).decode()
+    
+    css_hinh_nen = f"""
+    <style>
+    .stApp {{
+        background-image: url("data:image/png;base64,{chuoi_ma_hoa}");
+        background-size: cover;
+    }}
+    [data-testid="stVerticalBlock"] > div:has(div.stNumberInput) {{
+        background-color: rgba(255, 255, 255, 0.8);
+        padding: 20px;
+        border-radius: 10px;
+    }}
+    h1 {{
+        color: black;
+    }}
+    </style>
+    """
+    st.markdown(css_hinh_nen, unsafe_allow_html=True)
+
+chen_hinh_nen('background.jpg')
 
 st.title("Ứng dụng tính thuế thu nhập cá nhân")
 
@@ -16,12 +42,10 @@ nguoi_phu_thuoc = st.number_input(
 )
 
 if st.button("Tính toán"):
-    
     giam_tru_ban_than = 11.0
     giam_tru_phu_thuoc = 4.4
     
     tong_giam_tru = giam_tru_ban_than + (nguoi_phu_thuoc * giam_tru_phu_thuoc)
-    
     thu_nhap_tinh_thue = thu_nhap - tong_giam_tru
     
     if thu_nhap_tinh_thue <= 0:
@@ -44,15 +68,6 @@ if st.button("Tính toán"):
             thue_phai_nop = thu_nhap_tinh_thue * 0.35 - 9.85
 
     st.success("Kết quả tính toán")
-
-    st.write(
-        f" Tổng các khoản giảm trừ: **{tong_giam_tru:,.2f} triệu đồng**"
-    )
-    
-    st.write(
-        f" Thu nhập tính thuế: **{thu_nhap_tinh_thue:,.2f} triệu đồng**"
-    )
-
-    st.write(
-        f" Số thuế TNCN phải nộp: **{thue_phai_nop:,.2f} triệu đồng**"
-    )
+    st.write(f" Tổng các khoản giảm trừ: **{tong_giam_tru:,.2f} triệu đồng**")
+    st.write(f" Thu nhập tính thuế: **{thu_nhap_tinh_thue:,.2f} triệu đồng**")
+    st.write(f" Số thuế TNCN phải nộp: **{thue_phai_nop:,.2f} triệu đồng**")
